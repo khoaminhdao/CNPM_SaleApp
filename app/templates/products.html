@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">QUẢN LÝ SẢN PHẨN</h1>
+        <form>
+            <div class="form-group">
+                <label>Tìm theo tên</label>
+                <input type="text" name="keyword"
+                       class="form-control" placeholder="Nhập từ khoá..."  />
+            </div>
+            <div class="form-group">
+                <lable>Tìm theo giá</lable>
+                <div class="row">
+                  <div class="col">
+                      <input type="number" name="from_price"
+                             class="form-control" placeholder="Giá bắt đầu..." />
+                  </div>
+                  <div class="col">
+                      <input type="number" name="to_price"
+                             class="form-control" placeholder="Giá kết thúc..." />
+                  </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-danger" value="Tìm" />
+            </div>
+        </form>
+        <h1 class="text-center">
+            <a href="{{ url_for('add_or_update_product') }}">THÊM SẢN PHẨM</a>
+        </h1>
+        <table class="table">
+            {% for p in products %}
+            <tr>
+                <td>
+                    <img width="120" src="{{ p.images }}" alt="{{ p.name }}" />
+                </td>
+                <td>
+                    <h1>{{ p.name }}</h1>
+                </td>
+                <td>
+                    <p>{{ p.description }}</p>
+                </td>
+                <td>
+                    <p>{{ "{:,.2f}".format(p.price) }} VNĐ</p>
+                </td>
+                <td>{{ p.category_id }}</td>
+                <td>
+                    <a href="{{ url_for('add_or_update_product', product_id=p.id) }}">Cập nhật</a> |
+                    <a href="#">Xóa</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
