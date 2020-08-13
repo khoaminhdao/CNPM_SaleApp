@@ -125,7 +125,6 @@ def export_product():
 
 
 @app.route("/login", methods=["get", "post"])
-@login_required
 def login():
     err_msg = ""
     if request.method == "POST":
