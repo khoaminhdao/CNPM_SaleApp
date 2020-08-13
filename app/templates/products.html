@@ -5,6 +5,25 @@
     <title>Quản lý sản phẩm</title>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+    <script>
+        function delete_product(productId) {
+            var c = confirm("Ban chac chan xoa khong?");
+            if (c == true) {
+                fetch("/api/products/" + productId, {
+                    method: "delete"
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(data) {
+                    console.info(data);
+                    var proId = data.data.product_id;
+                    var p = document.getElementById("product" + proId);
+                    p.style.display = "none";
+                }).catch(function(err) {
+                    console.error(err);
+                });
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -35,9 +54,12 @@
         <h1 class="text-center">
             <a href="{{ url_for('add_or_update_product') }}">THÊM SẢN PHẨM</a>
         </h1>
+        <h1 class="text-center text-warning">
+            <a href="{{ url_for('export_product') }}">XUAT DANH SACH SAN PHAM</a>
+        </h1>
         <table class="table">
             {% for p in products %}
-            <tr>
+            <tr id="product{{ p.id }}">
                 <td>
                     <img width="120" src="{{ p.images }}" alt="{{ p.name }}" />
                 </td>
@@ -53,7 +75,7 @@
                 <td>{{ p.category_id }}</td>
                 <td>
                     <a href="{{ url_for('add_or_update_product', product_id=p.id) }}">Cập nhật</a> |
-                    <a href="#">Xóa</a>
+                    <a href="javascript:;" onclick="delete_product({{p.id}})">Xóa</a>
                 </td>
             </tr>
             {% endfor %}

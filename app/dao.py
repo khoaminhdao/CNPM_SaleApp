@@ -1,6 +1,7 @@
 from app import app
 import json
 import os
+import hashlib
 
 
 def read_categories():
@@ -47,6 +48,10 @@ def update_product(product_id, name, description, price, images, category_id):
 
             break
 
+    return update_json(products)
+
+
+def update_json(products):
     try:
         with open(os.path.join(app.root_path, "data/products.json"),
                   "w", encoding="utf-8") as f:
@@ -56,6 +61,7 @@ def update_product(product_id, name, description, price, images, category_id):
     except Exception as ex:
         print(ex)
         return False
+
 
 def add_product(name, description, price, images, category_id):
     products = read_products()
@@ -74,10 +80,37 @@ def add_product(name, description, price, images, category_id):
                   "w", encoding="utf-8") as f:
             json.dump(products, f, ensure_ascii=False, indent=4)
 
-            return True
+            return product
     except Exception as ex:
         print(ex)
-        return False
+        return None
+
+
+def delete_product(product_id):
+    products = read_products()
+    for idx, product in enumerate(products):
+        if product["id"] == int(product_id):
+            del products[idx]
+            break
+
+    return update_json(products=products)
+
+
+def read_users():
+    with open(os.path.join(app.root_path, "data/users.json"),
+              encoding="utf-8") as f:
+        return json.load(f)
+
+
+def validate_user(username, password):
+    users = read_users()
+    password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+
+    for user in users:
+        if user["username"].strip() == username.strip() and user["password"] == password:
+            return user
+
+    return None
 
 
 if __name__ == "__main__":
