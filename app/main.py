@@ -151,6 +151,24 @@ def logout():
         session["user"] = None
     return redirect(url_for("index"))
 
+@app.route("/register", methods=["get", "post"])
+def register():
+    err_msg = ""
+    if request.method == "POST":
+        name = request.form.get("name")
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm = request.form.get("confirm")
+        #strip -> xóa dấu cách 2 đầu
+        if password.strip() != confirm.strip():
+            err_msg = "Xác nhận mật khẩu không đúng!"
+        else:
+            path = utils.upload_avatar(file=request.files["avatar"])
+            if dao.add_user(name=name, username=username, password=password, avatar=path):
+                return redirect(url_for('login'))
+            else:
+                err_msg = "Có lỗi xảy ra!"
+    return render_template("register.html", err_msg=err_msg)
 
 if __name__ == "__main__":
     app.run(debug=False)

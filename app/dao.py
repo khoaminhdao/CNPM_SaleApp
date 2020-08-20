@@ -51,9 +51,9 @@ def update_product(product_id, name, description, price, images, category_id):
     return update_json(products)
 
 
-def update_json(products):
+def update_json(products, path = "data/products.json"):
     try:
-        with open(os.path.join(app.root_path, "data/products.json"),
+        with open(os.path.join(app.root_path, path),
                   "w", encoding="utf-8") as f:
             json.dump(products, f, ensure_ascii=False, indent=4)
 
@@ -97,7 +97,7 @@ def delete_product(product_id):
 
 
 def read_users():
-    with open(os.path.join(app.root_path, "data/users.json"),
+    with open(os.path.join(app.root_path, "data/user.json"),
               encoding="utf-8") as f:
         return json.load(f)
 
@@ -112,6 +112,27 @@ def validate_user(username, password):
 
     return None
 
+def add_user(name, username, password, avatar = None):
+    users = read_users()
+    password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+    user = {
+         "id": len(users) + 1,
+         "name": name,
+         "username": username,
+         "password": password,
+         "avatar": avatar,
+    }
+    users.append(user)
+
+    try:
+        with open(os.path.join(app.root_path, "data/user.json"),
+                  "w", encoding="utf-8") as f:
+            json.dump(users, f, ensure_ascii=False, indent=4)
+
+            return user
+    except Exception as ex:
+        print(ex)
+        return None
 
 if __name__ == "__main__":
     print(read_products())
